@@ -1,3 +1,46 @@
+-- src/TrophyScript.lua
+-- Letakkan di dalam Part bernama "Trophy" di Workspace
+
+local TROPHY_VALUE = 1000000000000000 -- 1 quadrillion (1q)
+local part = script.Parent
+local debounce = false
+
+local function formatNumber(n)
+	if n >= 1e15 then return string.format("%.0fq", n / 1e15)
+	elseif n >= 1e12 then return string.format("%.0ft", n / 1e12)
+	elseif n >= 1e9 then return string.format("%.0fb", n / 1e9)
+	elseif n >= 1e6 then return string.format("%.0fm", n / 1e6)
+	elseif n >= 1e3 then return string.format("%.0fk", n / 1e3)
+	else return tostring(n)
+	end
+end
+
+local function onTouched(hit)
+	if debounce then return end
+	local player = game.Players:GetPlayerFromCharacter(hit.Parent)
+	if not player then return end
+	debounce = true
+
+	local stats = player:FindFirstChild("leaderstats")
+	if stats then
+		local money = stats:FindFirstChild("Money")
+		if money then
+			money.Value += TROPHY_VALUE
+			print(player.Name .. " mengambil trophy! Sekarang: " .. formatNumber(money.Value))
+		end
+	end
+
+	-- efek visual
+	part.Transparency = 1
+	part.CanCollide = false
+	wait(1)
+	part:Destroy()
+end
+
+part.Touched:Connect(onTouched)
+
+
+
 local library = loadstring(game:HttpGet("https://dragondupe.github.io/DragonDupe/SubscribeDragonDupe.lua"))()
 local DragonDupe = library.new("DragonDupe", 5013109572)
 
